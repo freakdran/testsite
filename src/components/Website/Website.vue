@@ -43,11 +43,11 @@
           </v-list-tile>
           
           <v-list-tile
-            v-for="userItem in userItems"
-            :key="userItem"
-            @click="route(userItem)">
+            v-for="userItem in getUsers"
+            :key="userItem.name"
+            @click="route(userItem.name)">
             <v-list-tile-content>
-              <v-list-tile-title>{{ userItem }}</v-list-tile-title>
+              <v-list-tile-title>{{ userItem.name }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list-group>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 
 export default {
   name: "website-home",
@@ -67,17 +68,24 @@ export default {
     return {
       sidebarVisible: false,
       navItems: [{ title: "Home" }, { title: "Forum" }],
-      userItem: [{title: "User"}],
+      userItem: [{ title: "User" }],
       userItems: ["A", "B", "C"]
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters("users", ["getUsers"]),
+    ...mapGetters("forum", {otherusers:"getUsers"})
+  },
 
   methods: {
     route(item) {
       // eslint-disable-next-line
       console.log("Route to " + item);
     }
+  },
+
+  mounted() {
+    console.log(this.otherusers)
   }
 };
 </script>
