@@ -1,24 +1,23 @@
 <template>
-  <v-container fluid>
-    <v-toolbar 
-      app
-      dense>
-      <v-toolbar-side-icon @click="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
+  <div>
+      <v-toolbar 
+        app
+        dense>
+        <v-toolbar-side-icon @click="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
 
-      <v-toolbar-title>TEST</v-toolbar-title>
+        <v-toolbar-title>TEST</v-toolbar-title>
 
-    </v-toolbar>
+      </v-toolbar>
     <v-navigation-drawer
       v-model="sidebarVisible"
       absolute
-      temporary
-      app>        
+      temporary>        
       
-      <v-list> 
+      <v-list v-if="getUser"> 
         <template v-for="navItem in navItems">
               <v-list-tile
                 :key="navItem.title"
-                @click="route(navItem.title)"
+                @click="route(navItem.route)"
                 no-action
               >
                 <v-list-tile-content>
@@ -45,7 +44,7 @@
           <v-list-tile
             v-for="userItem in getUsers"
             :key="userItem.name"
-            @click="route(userItem.name)">
+            @click="setNewUser(userItem.name)">
             <v-list-tile-content>
               <v-list-tile-title>{{ userItem.name }}</v-list-tile-title>
             </v-list-tile-content>
@@ -54,11 +53,14 @@
 
       </v-list>
     </v-navigation-drawer>
-  </v-container>
+    <v-container fluid>
+      <router-view />
+    </v-container>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "website-home",
@@ -67,25 +69,35 @@ export default {
   data() {
     return {
       sidebarVisible: false,
-      navItems: [{ title: "Home" }, { title: "Forum" }],
+      navItems: [{ title: "Home", route:"WelcomePage" }, { title: "Forum", route:"ForumPage" }],
       userItem: [{ title: "User" }],
       userItems: ["A", "B", "C"]
     };
   },
   computed: {
     ...mapGetters("users", ["getUsers"]),
-    ...mapGetters("forum", {otherusers:"getUsers"})
+    ...mapGetters("user", ["getUser"]),
   },
 
   methods: {
-    route(item) {
-      // eslint-disable-next-line
-      console.log("Route to " + item);
-    }
+    ...mapMutations("user",["setUser"]),
+    route(page) {
+      this.$router.push({ name: page });
+    },
+    setNewUser(user) {
+      this.setUser(user)
+    },
   },
 
-  mounted() {
-    console.log(this.otherusers)
+  created() {
+    this.$router.push({ name: 'WelcomePage' });
   }
 };
 </script>
+
+<style scoped>
+.container {
+  padding-top:55px;
+}
+
+</style>
