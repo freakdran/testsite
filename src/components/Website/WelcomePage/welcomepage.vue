@@ -1,7 +1,7 @@
 <template>
 
   <div v-if="getUser">
-    Hello {{getUser}}.
+    Hello {{getUser.username}}.
   </div>
   <div v-else>
     Please select a user.
