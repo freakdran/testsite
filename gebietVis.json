@@ -1,0 +1,51 @@
+{
+  "width": 1000,
+  "height": 1000,
+
+  "data": {
+    "url": "londonBoroughs.json",
+    "format": {
+      "type": "topojson",
+      "feature": "boroughs"
+    }
+  },
+  "projection": {
+    "type": "mercator"
+  },
+  "mark": {
+    "type": "geoshape"
+  },
+  "encoding": {
+    "tooltip": [
+      { "field": "Borough", "type": "ordinal" },
+      { "field": "Number of Crimes", "type": "ordinal" }
+    ]
+  },
+  "transform": [
+    {
+      "calculate": "datum.id",
+      "as": "Borough"
+    },
+
+    {
+      "lookup": "id",
+      "from": {
+        "data": {
+          "url": "count_per_borrow_translate.csv"
+        },
+        "key": "Borough",
+        "fields": ["Number"]
+      }
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "sum",
+          "field": "Number",
+          "as": "Number of Crimes"
+        }
+      ],
+      "groupby": ["Borough"]
+    }
+  ]
+}

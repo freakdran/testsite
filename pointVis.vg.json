@@ -1,0 +1,75 @@
+{
+  "width": 1500,
+  "height": 990,
+
+  "layer": [
+    {
+      "data": {
+        "url": "londonBoroughs.json",
+        "format": {
+          "type": "topojson",
+          "feature": "boroughs"
+        }
+      },
+      "projection": {
+        "type": "mercator"
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "lightgray",
+        "stroke": "white"
+      }
+    },
+    {
+      "data": {
+        "url": "gird_pattern_translate.csv"
+      },
+
+      "transform": [
+        {
+          "joinaggregate": [
+            {
+              "op": "count",
+              "as": "numberAtPoint"
+            }
+          ],
+          "groupby": ["Latitude", "Longitude"]
+        }
+      ],
+
+      "projection": {
+        "type": "mercator"
+      },
+      "mark": {
+        "type": "circle",
+        "tooltip": { "content": "data" }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "Longitude",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "Latitude",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "numberAtPoint",
+          "type": "quantitative",
+          "scale": {
+            "type": "linear",
+            "scheme": "goldorange"
+          }
+        },
+        "size": {
+          "field": "numberAtPoint",
+          "type": "quantitative",
+          "scale": {
+            "type": "linear",
+            "range": [1,75]
+          }
+        }
+      }
+    }
+  ]
+}
